@@ -1,83 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>SYSTEM LOCKED</title>
+    <meta charset="UTF-8">
+    <title>TERMINAL ACCESS</title>
     <style>
-        body {
+        body, html {
+            height: 100%;
+            margin: 0;
             background-color: black;
-            color: #00ff00;
-            font-family: 'Courier New', monospace;
+            color: #00FF00;
+            font-family: 'Courier New', Courier, monospace;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            cursor: none; /* Menghilangkan kursor agar bingung */
+            overflow: hidden;
+            cursor: crosshair;
         }
-        #box {
-            border: 2px solid #00ff00;
-            padding: 50px;
-            text-align: center;
-        }
-        input {
+
+        #overlay {
+            position: fixed;
+            width: 100%;
+            height: 100%;
             background: black;
-            border: 1px solid #00ff00;
-            color: #00ff00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            cursor: pointer;
+        }
+
+        .content {
+            text-align: center;
+            border: 1px solid #00FF00;
+            padding: 50px;
+        }
+
+        input {
+            background: transparent;
+            border: 1px solid #00FF00;
+            color: #00FF00;
             padding: 10px;
-            margin-top: 20px;
+            text-align: center;
             outline: none;
         }
     </style>
 </head>
 <body>
 
-<div id="box">
-    <h1>[ TERMINAL LOCKED ]</h1>
-    <p>Aktivitas mencurigakan terdeteksi. Enkripsi sedang berjalan...</p>
-    <p>Masukkan Master Key untuk menghentikan proses:</p>
-    <input type="password" id="key" placeholder="Password..." autofocus>
-</div>
+    <!-- Layar Klik Pertama -->
+    <div id="overlay" onclick="startFullScreen()">
+        <h1>CLICK ANYWHERE TO START SYSTEM</h1>
+    </div>
 
-<script>
-    const input = document.getElementById('key');
+    <!-- Konten Utama (Tersembunyi) -->
+    <div class="content">
+        <h2 style="color: red;">[ SYSTEM LOCKED BY RANSOMWARE ]</h2>
+        <p>Your files have been encrypted. Enter password to decrypt.</p>
+        <input type="password" id="pass" placeholder="Enter Password" autofocus>
+    </div>
 
-    // 1. Paksa Fullscreen & Kunci Mouse saat klik di mana saja
-    document.addEventListener('click', () => {
-        // Fullscreen
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-        }
-        // Kunci kursor mouse biar nggak bisa gerak ke pojok layar
-        document.documentElement.requestPointerLock();
-    });
+    <script>
+        function startFullScreen() {
+            let elem = document.documentElement;
 
-    // 2. Cegah tombol Esc (beberapa browser tetap bisa lewat long-press Esc)
-    document.addEventListener('keydown', (e) => {
-        if (e.key === "Escape") {
-            e.preventDefault();
-            alert("AKSES DITOLAK: Masukkan password terlebih dahulu!");
-        }
-    });
-
-    // 3. Logika Unlock
-    input.addEventListener('keyup', (e) => {
-        if (e.key === "Enter") {
-            if (input.value === "1234") {
-                alert("Sistem Dipulihkan.");
-                document.exitPointerLock();
-                document.exitFullscreen();
-                window.location.href = "https://google.com";
-            } else {
-                alert("Password Salah!");
-                input.value = "";
+            // Masuk ke Mode Full Screen
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
             }
+
+            // Sembunyikan Overlay Klik
+            document.getElementById('overlay').style.display = 'none';
+            
+            // Kunci Mouse (Pointer Lock)
+            elem.requestPointerLock();
         }
-    });
 
-    // 4. Cegah klik kanan
-    document.addEventListener('contextmenu', event => event.preventDefault());
-</script>
+        // Cek Password (Password: 1234)
+        document.getElementById('pass').addEventListener('keyup', function(e) {
+            if (e.key === "Enter") {
+                if (this.value === "1234") {
+                    alert("Access Granted!");
+                    document.exitFullscreen();
+                    location.reload(); 
+                } else {
+                    alert("Wrong Password!");
+                    this.value = "";
+                }
+            }
+        });
 
+        // Cegah klik kanan agar tidak bisa inspect element dengan mudah
+        document.addEventListener('contextmenu', event => event.preventDefault());
+    </script>
 </body>
 </html>
