@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SYSTEM LOCKED</title>
+    <style>
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            cursor: none; /* Menghilangkan kursor agar bingung */
+        }
+        #box {
+            border: 2px solid #00ff00;
+            padding: 50px;
+            text-align: center;
+        }
+        input {
+            background: black;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px;
+            margin-top: 20px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="box">
+    <h1>[ TERMINAL LOCKED ]</h1>
+    <p>Aktivitas mencurigakan terdeteksi. Enkripsi sedang berjalan...</p>
+    <p>Masukkan Master Key untuk menghentikan proses:</p>
+    <input type="password" id="key" placeholder="Password..." autofocus>
+</div>
+
+<script>
+    const input = document.getElementById('key');
+
+    // 1. Paksa Fullscreen & Kunci Mouse saat klik di mana saja
+    document.addEventListener('click', () => {
+        // Fullscreen
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        }
+        // Kunci kursor mouse biar nggak bisa gerak ke pojok layar
+        document.documentElement.requestPointerLock();
+    });
+
+    // 2. Cegah tombol Esc (beberapa browser tetap bisa lewat long-press Esc)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Escape") {
+            e.preventDefault();
+            alert("AKSES DITOLAK: Masukkan password terlebih dahulu!");
+        }
+    });
+
+    // 3. Logika Unlock
+    input.addEventListener('keyup', (e) => {
+        if (e.key === "Enter") {
+            if (input.value === "1234") {
+                alert("Sistem Dipulihkan.");
+                document.exitPointerLock();
+                document.exitFullscreen();
+                window.location.href = "https://google.com";
+            } else {
+                alert("Password Salah!");
+                input.value = "";
+            }
+        }
+    });
+
+    // 4. Cegah klik kanan
+    document.addEventListener('contextmenu', event => event.preventDefault());
+</script>
+
+</body>
+</html>
