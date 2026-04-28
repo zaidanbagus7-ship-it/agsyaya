@@ -2,98 +2,96 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TERMINAL ACCESS</title>
+    <title>CRITICAL SYSTEM BREACH</title>
     <style>
         body, html {
-            height: 100%;
-            margin: 0;
-            background-color: black;
-            color: #00FF00;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            cursor: crosshair;
+            height: 100%; margin: 0; background-color: black;
+            color: #00FF00; font-family: 'Courier New', monospace;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; cursor: crosshair;
         }
-
         #overlay {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            cursor: pointer;
+            position: fixed; width: 100%; height: 100%; background: black;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 100; cursor: pointer;
         }
-
         .content {
-            text-align: center;
-            border: 1px solid #00FF00;
-            padding: 50px;
+            text-align: center; border: 2px solid red; padding: 40px;
+            box-shadow: 0 0 30px red; max-width: 80%;
         }
-
+        h1 { color: red; font-size: 2.5rem; text-shadow: 2px 2px 5px black; }
+        .timer { color: white; font-size: 3rem; margin: 20px 0; font-weight: bold; }
+        .warning { color: yellow; font-weight: bold; margin-bottom: 20px; }
         input {
-            background: transparent;
-            border: 1px solid #00FF00;
-            color: #00FF00;
-            padding: 10px;
-            text-align: center;
-            outline: none;
+            background: transparent; border: 1px solid #00FF00;
+            color: #00FF00; padding: 15px; text-align: center;
+            font-size: 1.2rem; width: 300px; outline: none;
         }
     </style>
 </head>
 <body>
 
-    <!-- Layar Klik Pertama -->
     <div id="overlay" onclick="startFullScreen()">
-        <h1>CLICK ANYWHERE TO START SYSTEM</h1>
+        <h1 style="color: #00FF00;">> INITIALIZING SYSTEM RECOVERY... [CLICK TO PROCEED]</h1>
     </div>
 
-    <!-- Konten Utama (Tersembunyi) -->
     <div class="content">
-        <h2 style="color: red;">[ SYSTEM LOCKED BY RANSOMWARE ]</h2>
-        <p>Your files have been encrypted. Enter password to decrypt.</p>
-        <input type="password" id="pass" placeholder="Enter Password" autofocus>
+        <h1>[!] PERANGKAT ANDA TERINFEKSI RANSOMWARE [!]</h1>
+        <p class="warning">PERINGATAN: JANGAN MATIKAN LAPTOP ATAU MEMUTUS KONEKSI INTERNET!</p>
+        <p>Jika password salah atau waktu habis, enkripsi permanen akan dijalankan.</p>
+        <p style="color: red; font-weight: bold;">HARD DRIVE AKAN DI-WIPE TOTAL DAN OVERHEATING AKAN DIPAKSA (LAPTOP MELEDAK).</p>
+        
+        <div class="timer" id="countdown">24:00:00</div>
+
+        <input type="password" id="pass" placeholder="MASUKKAN DECRYPTION KEY" autofocus>
+        <p id="error-msg" style="color: red; margin-top: 10px; display: none;">PASSWORD SALAH! PROSES PENGHANCURAN DIPERCEPAT!</p>
     </div>
 
     <script>
+        // Set waktu hitung mundur (24 jam)
+        let totalSeconds = 24 * 60 * 60;
+
+        function updateTimer() {
+            let hours = Math.floor(totalSeconds / 3600);
+            let minutes = Math.floor((totalSeconds % 3600) / 60);
+            let seconds = totalSeconds % 60;
+
+            document.getElementById('countdown').innerText = 
+                (hours < 10 ? "0" : "") + hours + ":" + 
+                (minutes < 10 ? "0" : "") + minutes + ":" + 
+                (seconds < 10 ? "0" : "") + seconds;
+
+            if (totalSeconds > 0) {
+                totalSeconds--;
+            } else {
+                alert("DATA TERHAPUS! SISTEM MELEDAK!");
+            }
+        }
+
+        setInterval(updateTimer, 1000);
+
         function startFullScreen() {
             let elem = document.documentElement;
-
-            // Masuk ke Mode Full Screen
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
-                elem.msRequestFullscreen();
-            }
-
-            // Sembunyikan Overlay Klik
+            if (elem.requestFullscreen) elem.requestFullscreen();
             document.getElementById('overlay').style.display = 'none';
-            
-            // Kunci Mouse (Pointer Lock)
             elem.requestPointerLock();
         }
 
-        // Cek Password (Password: 1234)
         document.getElementById('pass').addEventListener('keyup', function(e) {
             if (e.key === "Enter") {
                 if (this.value === "1234") {
-                    alert("Access Granted!");
+                    alert("DECRYPTION SUCCESSFUL. FILE DIPULIHKAN.");
                     document.exitFullscreen();
-                    location.reload(); 
+                    location.reload();
                 } else {
-                    alert("Wrong Password!");
+                    // Jika salah, kurangi waktu secara drastis (hukuman)
+                    totalSeconds -= 3600; // Kurangi 1 jam tiap salah
+                    document.getElementById('error-msg').style.display = 'block';
                     this.value = "";
                 }
             }
         });
 
-        // Cegah klik kanan agar tidak bisa inspect element dengan mudah
         document.addEventListener('contextmenu', event => event.preventDefault());
     </script>
 </body>
